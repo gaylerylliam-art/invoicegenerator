@@ -43,26 +43,27 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# Session State Initialization
-if 'items' not in st.session_state:
-    st.session_state.items = [{"description": "Service Alpha", "sub_description": "Standard service", "quantity": 1, "price": 100.0}]
+def init_session_state():
+    if 'items' not in st.session_state:
+        st.session_state.items = [{"description": "Service Alpha", "sub_description": "Standard service", "quantity": 1, "price": 100.0}]
 
-if 'invoice_data' not in st.session_state:
-    st.session_state.invoice_data = {
-        "invoice_number": "INV-000001",
-        "date": datetime.now().date(),
-        "currency": "USD",
-        "business": {"name": "Zylker Design Labs", "address": "14B, Northern Street\nNew York", "trn": "", "logo": None},
-        "client": {"name": "Jack Little", "address": "3242 Chandler Hollow Road\nPittsburgh", "trn": "", "delivery_address": ""},
-        "tax_rate": 5.0,
-        "terms": "Due on Receipt",
-        "notes": "Thanks for your business.",
-        "terms_conditions": "Terms and conditions apply.",
-        "show_stamp": False,
-        "bank_details": {"bank_name": "", "account_name": "", "account_number": "", "iban": "", "swift": ""}
-    }
+    if 'invoice_data' not in st.session_state:
+        st.session_state.invoice_data = {
+            "invoice_number": "INV-000001",
+            "date": datetime.now().date(),
+            "currency": "USD",
+            "business": {"name": "Zylker Design Labs", "address": "14B, Northern Street\nNew York", "trn": "", "logo": None},
+            "client": {"name": "Jack Little", "address": "3242 Chandler Hollow Road\nPittsburgh", "trn": "", "delivery_address": ""},
+            "tax_rate": 5.0,
+            "terms": "Due on Receipt",
+            "notes": "Thanks for your business.",
+            "terms_conditions": "Terms and conditions apply.",
+            "show_stamp": False,
+            "bank_details": {"bank_name": "", "account_name": "", "account_number": "", "iban": "", "swift": ""}
+        }
 
 def main():
+    init_session_state()
     st.title("📄 Professional Invoice Generator")
     
     col1, col2 = st.columns([1, 1])
