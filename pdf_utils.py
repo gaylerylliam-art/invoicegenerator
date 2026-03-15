@@ -5,7 +5,13 @@ def generate_invoice_pdf(data, items, subtotal, tax, total):
     pdf = FPDF()
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
-    
+    # Logo
+    y_start = pdf.get_y()
+    if data["business"].get("logo"):
+        logo_stream = io.BytesIO(data["business"]["logo"])
+        pdf.image(logo_stream, x=10, y=y_start, h=25)
+        pdf.set_y(y_start + 30) # Move below logo
+
     # Font
     pdf.set_font("Helvetica", "B", 24)
     pdf.set_text_color(139, 69, 19) # Rust Color

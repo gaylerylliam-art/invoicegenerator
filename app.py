@@ -3,6 +3,8 @@ import pandas as pd
 from datetime import datetime
 import json
 import os
+import base64
+import io
 from dotenv import load_dotenv
 from supabase import create_client, Client
 from pdf_utils import generate_invoice_pdf
@@ -77,6 +79,10 @@ def main():
         st.header("Invoice Details")
         
         with st.expander("Business Details", expanded=True):
+            logo_file = st.file_uploader("Business Logo", type=["png", "jpg", "jpeg"])
+            if logo_file:
+                st.session_state.invoice_data["business"]["logo"] = logo_file.read()
+                
             st.session_state.invoice_data["business"]["name"] = st.text_input("Business Name", value=st.session_state.invoice_data["business"]["name"])
             st.session_state.invoice_data["business"]["trn"] = st.text_input("Business TRN/Tax ID", value=st.session_state.invoice_data["business"]["trn"])
             st.session_state.invoice_data["business"]["address"] = st.text_area("Business Address", value=st.session_state.invoice_data["business"]["address"])
@@ -130,10 +136,15 @@ def main():
         total = subtotal + tax
         
         # Construction of flat HTML string to avoid markdown indentation issues
+        logo_html = ""
+        if st.session_state.invoice_data["business"]["logo"]:
+            logo_b64 = base64.b64encode(st.session_state.invoice_data["business"]["logo"]).decode()
+            logo_html = f'<img src="data:image/png;base64,{logo_b64}" style="max-height: 80px; margin-bottom: 10px;">'
+
         preview_html = (
             f'<div style="padding: 20px; background: white; border: 1px solid #ddd; border-radius: 10px; color: black; font-family: sans-serif; min-height: 800px;">'
             f'<div style="display: flex; justify-content: space-between;">'
-            f'<div><h2 style="color: #8b4513; margin: 0;">{st.session_state.invoice_data["business"]["name"]}</h2>'
+            f'<div>{logo_html}<h2 style="color: #8b4513; margin: 0;">{st.session_state.invoice_data["business"]["name"]}</h2>'
             f'<p style="margin: 5px 0;">{st.session_state.invoice_data["business"]["address"].replace("\\n", "<br>")}</p></div>'
             f'<div style="text-align: right;"><h1 style="margin: 0; font-size: 2.5em;">INVOICE</h1>'
             f'<p style="margin: 5px 0;">#{st.session_state.invoice_data["invoice_number"]}<br>{st.session_state.invoice_data["date"]}</p></div></div>'
