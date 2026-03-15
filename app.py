@@ -41,7 +41,7 @@ st.markdown("""
         font-family: 'Helvetica', sans-serif;
     }
     </style>
-    """, unsafe_allow_value=True)
+    """, unsafe_allow_html=True)
 
 # Session State Initialization
 if 'items' not in st.session_state:
