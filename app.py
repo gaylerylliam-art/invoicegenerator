@@ -44,10 +44,10 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 def init_session_state():
-    if 'items' not in st.session_state:
+    if 'items' not in st.session_state or st.session_state.items is None:
         st.session_state.items = [{"description": "Service Alpha", "sub_description": "Standard service", "quantity": 1, "price": 100.0}]
 
-    if 'invoice_data' not in st.session_state:
+    if 'invoice_data' not in st.session_state or st.session_state.invoice_data is None:
         st.session_state.invoice_data = {
             "invoice_number": "INV-000001",
             "date": datetime.now().date(),
@@ -64,6 +64,11 @@ def init_session_state():
 
 def main():
     init_session_state()
+    
+    # Ensure items is always a list
+    if not isinstance(st.session_state.items, list):
+        st.session_state.items = []
+        
     st.title("📄 Professional Invoice Generator")
     
     col1, col2 = st.columns([1, 1])
