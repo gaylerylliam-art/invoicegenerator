@@ -44,8 +44,8 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 def init_session_state():
-    if 'items' not in st.session_state or st.session_state.items is None:
-        st.session_state.items = [{"description": "Service Alpha", "sub_description": "Standard service", "quantity": 1, "price": 100.0}]
+    if 'line_items' not in st.session_state or st.session_state.line_items is None:
+        st.session_state.line_items = [{"description": "Service Alpha", "sub_description": "Standard service", "quantity": 1, "price": 100.0}]
 
     if 'invoice_data' not in st.session_state or st.session_state.invoice_data is None:
         st.session_state.invoice_data = {
@@ -65,9 +65,9 @@ def init_session_state():
 def main():
     init_session_state()
     
-    # Ensure items is always a list
-    if not isinstance(st.session_state.items, list):
-        st.session_state.items = []
+    # Defensive check
+    if not isinstance(st.session_state.line_items, list):
+        st.session_state.line_items = []
         
     st.title("📄 Professional Invoice Generator")
     
@@ -96,23 +96,23 @@ def main():
                 st.session_state.invoice_data["currency"] = st.selectbox("Currency", ["USD", "AED", "EUR", "GBP", "INR"], index=0)
 
         st.subheader("Line Items")
-        for i, item in enumerate(st.session_state.items):
+        for i, item in enumerate(st.session_state.line_items):
             with st.container():
                 cols = st.columns([4, 2, 2, 1])
                 with cols[0]:
-                    st.session_state.items[i]["description"] = st.text_input(f"Desc {i+1}", value=item["description"], key=f"desc_{i}")
-                    st.session_state.items[i]["sub_description"] = st.text_input(f"Sub-desc {i+1}", value=item["sub_description"], key=f"subdesc_{i}")
+                    st.session_state.line_items[i]["description"] = st.text_input(f"Desc {i+1}", value=item["description"], key=f"desc_{i}")
+                    st.session_state.line_items[i]["sub_description"] = st.text_input(f"Sub-desc {i+1}", value=item["sub_description"], key=f"subdesc_{i}")
                 with cols[1]:
-                    st.session_state.items[i]["quantity"] = st.number_input(f"Qty {i+1}", value=float(item["quantity"]), key=f"qty_{i}")
+                    st.session_state.line_items[i]["quantity"] = st.number_input(f"Qty {i+1}", value=float(item["quantity"]), key=f"qty_{i}")
                 with cols[2]:
-                    st.session_state.items[i]["price"] = st.number_input(f"Price {i+1}", value=float(item["price"]), key=f"price_{i}")
+                    st.session_state.line_items[i]["price"] = st.number_input(f"Price {i+1}", value=float(item["price"]), key=f"price_{i}")
                 with cols[3]:
                     if st.button("🗑️", key=f"del_{i}"):
-                        st.session_state.items.pop(i)
+                        st.session_state.line_items.pop(i)
                         st.rerun()
         
         if st.button("➕ Add Item"):
-            st.session_state.items.append({"description": "", "sub_description": "", "quantity": 1, "price": 0.0})
+            st.session_state.line_items.append({"description": "", "sub_description": "", "quantity": 1, "price": 0.0})
             st.rerun()
 
         with st.expander("Taxes & Terms"):
@@ -125,7 +125,7 @@ def main():
         st.header("Live Preview")
         
         # Calculation
-        subtotal = sum(item["quantity"] * item["price"] for item in st.session_state.items)
+        subtotal = sum(item["quantity"] * item["price"] for item in st.session_state.line_items)
         tax = (subtotal * st.session_state.invoice_data["tax_rate"]) / 100
         total = subtotal + tax
         
@@ -159,7 +159,7 @@ def main():
                 </thead>
                 <tbody>
         """
-        for item in st.session_state.items:
+        for item in st.session_state.line_items:
             preview_html += f"""
                 <tr style="border-bottom: 1px solid #eee;">
                     <td style="padding: 10px;">{item["description"]}<br><small>{item["sub_description"]}</small></td>
@@ -184,7 +184,7 @@ def main():
         st.divider()
         
         if st.button("📥 Download PDF"):
-            pdf_data = generate_invoice_pdf(st.session_state.invoice_data, st.session_state.items, subtotal, tax, total)
+            pdf_data = generate_invoice_pdf(st.session_state.invoice_data, st.session_state.line_items, subtotal, tax, total)
             st.download_button(
                 label="Click here to download",
                 data=pdf_data,
