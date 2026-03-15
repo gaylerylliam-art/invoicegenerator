@@ -129,57 +129,46 @@ def main():
         tax = (subtotal * st.session_state.invoice_data["tax_rate"]) / 100
         total = subtotal + tax
         
-        # Simple HTML Preview
-        preview_html = f"""
-        <div style="padding: 20px; background: white; border: 1px solid #ddd; border-radius: 10px; color: black; font-family: sans-serif;">
-            <div style="display: flex; justify-content: space-between;">
-                <div>
-                    <h2 style="color: #8b4513;">{st.session_state.invoice_data["business"]["name"]}</h2>
-                    <p>{st.session_state.invoice_data["business"]["address"].replace('\\n', '<br>')}</p>
-                </div>
-                <div style="text-align: right;">
-                    <h1>INVOICE</h1>
-                    <p>#{st.session_state.invoice_data["invoice_number"]}<br>{st.session_state.invoice_data["date"]}</p>
-                </div>
-            </div>
-            <hr>
-            <div style="margin-top: 20px;">
-                <strong>Bill To:</strong><br>
-                {st.session_state.invoice_data["client"]["name"]}<br>
-                {st.session_state.invoice_data["client"]["address"].replace('\\n', '<br>')}
-            </div>
-            <table style="width: 100%; margin-top: 30px; border-collapse: collapse;">
-                <thead>
-                    <tr style="border-bottom: 2px solid #8b4513;">
-                        <th style="text-align: left; padding: 10px;">Description</th>
-                        <th style="text-align: right; padding: 10px;">Qty</th>
-                        <th style="text-align: right; padding: 10px;">Price</th>
-                        <th style="text-align: right; padding: 10px;">Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-        """
-        for item in st.session_state.line_items:
-            preview_html += f"""
-                <tr style="border-bottom: 1px solid #eee;">
-                    <td style="padding: 10px;">{item["description"]}<br><small>{item["sub_description"]}</small></td>
-                    <td style="text-align: right; padding: 10px;">{item["quantity"]}</td>
-                    <td style="text-align: right; padding: 10px;">{st.session_state.invoice_data["currency"]} {item["price"]:,.2f}</td>
-                    <td style="text-align: right; padding: 10px;">{st.session_state.invoice_data["currency"]} {item["quantity"]*item["price"]:,.2f}</td>
-                </tr>
-            """
+        # Construction of flat HTML string to avoid markdown indentation issues
+        preview_html = (
+            f'<div style="padding: 20px; background: white; border: 1px solid #ddd; border-radius: 10px; color: black; font-family: sans-serif; min-height: 800px;">'
+            f'<div style="display: flex; justify-content: space-between;">'
+            f'<div><h2 style="color: #8b4513; margin: 0;">{st.session_state.invoice_data["business"]["name"]}</h2>'
+            f'<p style="margin: 5px 0;">{st.session_state.invoice_data["business"]["address"].replace("\\n", "<br>")}</p></div>'
+            f'<div style="text-align: right;"><h1 style="margin: 0; font-size: 2.5em;">INVOICE</h1>'
+            f'<p style="margin: 5px 0;">#{st.session_state.invoice_data["invoice_number"]}<br>{st.session_state.invoice_data["date"]}</p></div></div>'
+            f'<hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">'
+            f'<div style="margin-top: 20px;"><strong>Bill To:</strong><br>'
+            f'{st.session_state.invoice_data["client"]["name"]}<br>'
+            f'{st.session_state.invoice_data["client"]["address"].replace("\\n", "<br>")}</div>'
+            f'<table style="width: 100%; margin-top: 30px; border-collapse: collapse;"><thead>'
+            f'<tr style="border-bottom: 2px solid #8b4513;">'
+            f'<th style="text-align: left; padding: 10px;">Description</th>'
+            f'<th style="text-align: right; padding: 10px;">Qty</th>'
+            f'<th style="text-align: right; padding: 10px;">Price</th>'
+            f'<th style="text-align: right; padding: 10px;">Total</th></tr></thead><tbody>'
+        )
         
-        preview_html += f"""
-                </tbody>
-            </table>
-            <div style="margin-top: 20px; text-align: right;">
-                <p>Subtotal: {st.session_state.invoice_data["currency"]} {subtotal:,.2f}</p>
-                <p>Tax ({st.session_state.invoice_data["tax_rate"]}%): {st.session_state.invoice_data["currency"]} {tax:,.2f}</p>
-                <h3 style="color: #8b4513;">Total: {st.session_state.invoice_data["currency"]} {total:,.2f}</h3>
-            </div>
-        </div>
-        """
-        st.markdown(preview_html, unsafe_allow_html=True)
+        for item in st.session_state.line_items:
+            preview_html += (
+                f'<tr style="border-bottom: 1px solid #eee;">'
+                f'<td style="padding: 10px;">{item["description"]}<br><small style="color: #666;">{item["sub_description"]}</small></td>'
+                f'<td style="text-align: right; padding: 10px;">{item["quantity"]}</td>'
+                f'<td style="text-align: right; padding: 10px;">{st.session_state.invoice_data["currency"]} {item["price"]:,.2f}</td>'
+                f'<td style="text-align: right; padding: 10px;">{st.session_state.invoice_data["currency"]} {item["quantity"]*item["price"]:,.2f}</td></tr>'
+            )
+        
+        preview_html += (
+            f'</tbody></table>'
+            f'<div style="margin-top: 40px; text-align: right;">'
+            f'<p style="margin: 5px 0;">Subtotal: {st.session_state.invoice_data["currency"]} {subtotal:,.2f}</p>'
+            f'<p style="margin: 5px 0;">Tax ({st.session_state.invoice_data["tax_rate"]}%): {st.session_state.invoice_data["currency"]} {tax:,.2f}</p>'
+            f'<h3 style="color: #8b4513; margin: 10px 0;">Total: {st.session_state.invoice_data["currency"]} {total:,.2f}</h3>'
+            f'</div></div>'
+        )
+        
+        # Use components.html for consistent rendering
+        st.components.v1.html(preview_html, height=800, scrolling=True)
         
         st.divider()
         
