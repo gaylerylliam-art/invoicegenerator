@@ -3,4 +3,3 @@ fpdf2
 pandas
 supabase
 python-dotenv
-lucide-icon-streamlit
