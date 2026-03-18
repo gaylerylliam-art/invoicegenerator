@@ -174,26 +174,37 @@ def main():
             logo_html = f'<img src="data:image/png;base64,{logo_b64}" style="max-height: 80px; margin-bottom: 10px;">'
 
         # TRN strings
-        seller_trn = f'<p style="margin: 2px 0; font-size: 0.85em; color: #666;"><strong>TRN:</strong> {st.session_state.invoice_data["business"]["trn"]}</p>' if st.session_state.invoice_data["business"]["trn"] else ""
-        client_trn = f'<p style="margin: 2px 0; font-size: 0.85em; color: #666;"><strong>TRN:</strong> {st.session_state.invoice_data["client"]["trn"]}</p>' if st.session_state.invoice_data["client"]["trn"] else ""
+        seller_trn = (
+            f'<div style="display: flex; margin-top: 5px; font-size: 0.85em; color: #666;">'
+            f'<span style="width: 50px;"><strong>TRN:</strong></span>'
+            f'<span>{st.session_state.invoice_data["business"]["trn"]}</span></div>'
+        ) if st.session_state.invoice_data["business"]["trn"] else ""
+        
+        client_trn = (
+            f'<div style="display: flex; margin-top: 5px; font-size: 0.85em; color: #666;">'
+            f'<span style="width: 50px;"><strong>TRN:</strong></span>'
+            f'<span>{st.session_state.invoice_data["client"]["trn"]}</span></div>'
+        ) if st.session_state.invoice_data["client"]["trn"] else ""
 
         preview_html = (
             f'<div style="padding: 40px; background: white; border: 1px solid #ddd; border-radius: 10px; color: black; font-family: sans-serif; min-height: 1000px; display: flex; flex-direction: column; position: relative;">'
             f'<div style="flex-grow: 1;">'
-            f'<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px;">'
+            f'<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 50px;">'
             f'<div>{logo_html}'
-            f'<h2 style="color: #8b4513; margin: 10px 0 5px 0; font-size: 1.8em;">{st.session_state.invoice_data["business"]["name"]}</h2>'
-            f'<p style="margin: 2px 0; font-size: 0.9em; color: #444; max-width: 300px;">{st.session_state.invoice_data["business"]["address"].replace("\\n", "<br>")}</p>{seller_trn}</div>'
+            f'<h2 style="color: #8b4513; margin: 15px 0 5px 0; font-size: 1.8em;">{st.session_state.invoice_data["business"]["name"]}</h2>'
+            f'<div style="margin: 2px 0; font-size: 0.9em; color: #444; max-width: 320px; line-height: 1.5;">'
+            f'{st.session_state.invoice_data["business"]["address"].replace("\\n", "<br>")}</div>{seller_trn}</div>'
             f'<div style="text-align: right;">'
             f'<h1 style="margin: 0; font-size: 3.5em; font-weight: 900; color: #000; line-height: 1;">INVOICE</h1>'
-            f'<div style="margin-top: 15px; font-size: 0.95em; color: #444;">'
-            f'<p style="margin: 2px 0;"><strong>Invoice #:</strong> {st.session_state.invoice_data["invoice_number"]}</p>'
-            f'<p style="margin: 2px 0;"><strong>Date:</strong> {st.session_state.invoice_data["date"]}</p></div></div></div>'
-            f'<hr style="border: 0; border-top: 2px solid #8b4513; margin: 30px 0;">'
-            f'<div style="margin-top: 20px;">'
-            f'<h4 style="margin: 0 0 10px 0; color: #8b4513; text-transform: uppercase; font-size: 0.9em;">Bill To:</h4>'
-            f'<p style="margin: 2px 0; font-size: 1.1em; font-weight: bold;">{st.session_state.invoice_data["client"]["name"]}</p>'
-            f'<p style="margin: 2px 0; font-size: 0.95em; color: #444;">{st.session_state.invoice_data["client"]["address"].replace("\\n", "<br>")}</p>{client_trn}</div>'
+            f'<div style="margin-top: 20px; font-size: 0.95em; color: #444; display: inline-block; text-align: left;">'
+            f'<div style="display: flex; margin-bottom: 5px;"><span style="width: 80px; font-weight: bold;">Invoice #:</span><span>{st.session_state.invoice_data["invoice_number"]}</span></div>'
+            f'<div style="display: flex;"><span style="width: 80px; font-weight: bold;">Date:</span><span>{st.session_state.invoice_data["date"]}</span></div></div></div></div>'
+            f'<hr style="border: 0; border-top: 2px solid #8b4513; margin: 40px 0;">'
+            f'<div style="margin-top: 10px; margin-bottom: 40px;">'
+            f'<h4 style="margin: 0 0 15px 0; color: #8b4513; text-transform: uppercase; font-size: 0.85em; letter-spacing: 1px;">Bill To:</h4>'
+            f'<p style="margin: 0 0 5px 0; font-size: 1.2em; font-weight: bold; color: #000;">{st.session_state.invoice_data["client"]["name"]}</p>'
+            f'<div style="margin: 0; font-size: 0.95em; color: #444; line-height: 1.5; max-width: 350px;">'
+            f'{st.session_state.invoice_data["client"]["address"].replace("\\n", "<br>")}</div>{client_trn}</div>'
             f'<table style="width: 100%; margin-top: 30px; border-collapse: collapse;"><thead>'
             f'<tr style="border-bottom: 2px solid #8b4513;">'
             f'<th style="text-align: left; padding: 10px;">Description</th>'

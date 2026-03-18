@@ -10,17 +10,17 @@ def generate_invoice_pdf(data, items, subtotal, tax, total):
     if data["business"].get("logo"):
         logo_stream = io.BytesIO(data["business"]["logo"])
         pdf.image(logo_stream, x=10, y=y_top, h=20)
-        pdf.set_y(y_top + 22)
+        pdf.set_y(y_top + 25)
     
     pdf.set_font("Helvetica", "B", 16)
     pdf.set_text_color(139, 69, 19) # Rust Color
-    pdf.cell(100, 7, data["business"]["name"], ln=True)
+    pdf.cell(100, 8, data["business"]["name"], ln=True)
     
     pdf.set_font("Helvetica", "", 9)
     pdf.set_text_color(60, 60, 60)
     business_addr = data["business"]["address"].split("\n")
     for line in business_addr:
-        pdf.cell(100, 4, line, ln=True)
+        pdf.cell(100, 4.5, line, ln=True)
     
     if data["business"].get("trn"):
         pdf.set_font("Helvetica", "B", 9)
@@ -28,39 +28,44 @@ def generate_invoice_pdf(data, items, subtotal, tax, total):
         pdf.set_font("Helvetica", "", 9)
         pdf.cell(90, 5, data["business"]["trn"], ln=True)
 
-    # Invoice Title and Metadata (RIGHT - Absolute Positioning)
+    # Invoice Title and Metadata (RIGHT)
     pdf.set_xy(110, y_top)
     pdf.set_font("Helvetica", "B", 40)
     pdf.set_text_color(0, 0, 0)
     pdf.cell(90, 20, "INVOICE", ln=True, align="R")
     
+    pdf.ln(5)
+    
+    # Metadata Alignment (Right column, left-aligned within the block)
+    meta_x = 150
     pdf.set_font("Helvetica", "B", 10)
     pdf.set_text_color(60, 60, 60)
-    pdf.set_x(110)
-    pdf.cell(60, 5, "Invoice #:", ln=False, align="R")
-    pdf.set_font("Helvetica", "", 10)
-    pdf.cell(30, 5, data["invoice_number"], ln=True, align="R")
     
-    pdf.set_x(110)
+    pdf.set_xy(meta_x, pdf.get_y())
+    pdf.cell(20, 5, "Invoice #:", ln=False)
+    pdf.set_font("Helvetica", "", 10)
+    pdf.cell(30, 5, data["invoice_number"], ln=True)
+    
+    pdf.set_xy(meta_x, pdf.get_y())
     pdf.set_font("Helvetica", "B", 10)
-    pdf.cell(60, 5, "Date:", ln=False, align="R")
+    pdf.cell(20, 5, "Date:", ln=False)
     pdf.set_font("Helvetica", "", 10)
-    pdf.cell(30, 5, str(data["date"]), ln=True, align="R")
+    pdf.cell(30, 5, str(data["date"]), ln=True)
     
-    pdf.ln(10)
+    pdf.set_y(pdf.get_y() + 10)
     pdf.set_draw_color(139, 69, 19)
     pdf.set_line_width(0.5)
     pdf.line(10, pdf.get_y(), 200, pdf.get_y())
-    pdf.ln(5)
+    pdf.ln(8)
     
     # Client details
-    pdf.set_font("Helvetica", "B", 10)
+    pdf.set_font("Helvetica", "B", 9)
     pdf.set_text_color(139, 69, 19)
     pdf.cell(100, 6, "BILL TO:", ln=True)
     
-    pdf.set_font("Helvetica", "B", 11)
+    pdf.set_font("Helvetica", "B", 12)
     pdf.set_text_color(0, 0, 0)
-    pdf.cell(100, 6, data["client"]["name"], ln=True)
+    pdf.cell(100, 7, data["client"]["name"], ln=True)
     
     pdf.set_font("Helvetica", "", 10)
     pdf.set_text_color(60, 60, 60)
@@ -69,12 +74,13 @@ def generate_invoice_pdf(data, items, subtotal, tax, total):
         pdf.cell(100, 5, line, ln=True)
     
     if data["client"].get("trn"):
+        pdf.set_y(pdf.get_y() + 2)
         pdf.set_font("Helvetica", "B", 9)
         pdf.cell(10, 5, "TRN: ", ln=False)
         pdf.set_font("Helvetica", "", 9)
         pdf.cell(90, 5, data["client"]["trn"], ln=True)
         
-    pdf.ln(5)
+    pdf.ln(10)
     
     # Table Header
     pdf.set_fill_color(139, 69, 19)
