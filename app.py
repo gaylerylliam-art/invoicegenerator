@@ -173,18 +173,22 @@ def main():
             logo_b64 = base64.b64encode(st.session_state.invoice_data["business"]["logo"]).decode()
             logo_html = f'<img src="data:image/png;base64,{logo_b64}" style="max-height: 80px; margin-bottom: 10px;">'
 
+        # TRN strings
+        seller_trn = f'<p style="margin: 5px 0; font-size: 0.9em;"><strong>TRN:</strong> {st.session_state.invoice_data["business"]["trn"]}</p>' if st.session_state.invoice_data["business"]["trn"] else ""
+        client_trn = f'<p style="margin: 5px 0; font-size: 0.9em;"><strong>TRN:</strong> {st.session_state.invoice_data["client"]["trn"]}</p>' if st.session_state.invoice_data["client"]["trn"] else ""
+
         preview_html = (
             f'<div style="padding: 20px; background: white; border: 1px solid #ddd; border-radius: 10px; color: black; font-family: sans-serif; min-height: 1000px; display: flex; flex-direction: column; position: relative;">'
             f'<div style="flex-grow: 1;">'
             f'<div style="display: flex; justify-content: space-between;">'
             f'<div>{logo_html}<h2 style="color: #8b4513; margin: 0;">{st.session_state.invoice_data["business"]["name"]}</h2>'
-            f'<p style="margin: 5px 0;">{st.session_state.invoice_data["business"]["address"].replace("\\n", "<br>")}</p></div>'
+            f'<p style="margin: 5px 0;">{st.session_state.invoice_data["business"]["address"].replace("\\n", "<br>")}</p>{seller_trn}</div>'
             f'<div style="text-align: right;"><h1 style="margin: 0; font-size: 2.5em;">INVOICE</h1>'
             f'<p style="margin: 5px 0;">#{st.session_state.invoice_data["invoice_number"]}<br>{st.session_state.invoice_data["date"]}</p></div></div>'
             f'<hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">'
             f'<div style="margin-top: 20px;"><strong>Bill To:</strong><br>'
             f'{st.session_state.invoice_data["client"]["name"]}<br>'
-            f'{st.session_state.invoice_data["client"]["address"].replace("\\n", "<br>")}</div>'
+            f'{st.session_state.invoice_data["client"]["address"].replace("\\n", "<br>")}{client_trn}</div>'
             f'<table style="width: 100%; margin-top: 30px; border-collapse: collapse;"><thead>'
             f'<tr style="border-bottom: 2px solid #8b4513;">'
             f'<th style="text-align: left; padding: 10px;">Description</th>'

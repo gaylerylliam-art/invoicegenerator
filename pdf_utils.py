@@ -31,6 +31,12 @@ def generate_invoice_pdf(data, items, subtotal, tax, total):
     for line in business_addr:
         pdf.cell(100, 5, line, ln=True)
     
+    if data["business"].get("trn"):
+        pdf.set_font("Helvetica", "B", 10)
+        pdf.cell(15, 5, "TRN: ", ln=False)
+        pdf.set_font("Helvetica", "", 10)
+        pdf.cell(85, 5, data["business"]["trn"], ln=True)
+
     pdf.ln(10)
     
     # Invoice details
@@ -55,6 +61,12 @@ def generate_invoice_pdf(data, items, subtotal, tax, total):
     client_addr = data["client"]["address"].split("\n")
     for line in client_addr:
         pdf.cell(100, 5, line, ln=True)
+    
+    if data["client"].get("trn"):
+        pdf.set_font("Helvetica", "B", 10)
+        pdf.cell(15, 5, "TRN: ", ln=False)
+        pdf.set_font("Helvetica", "", 10)
+        pdf.cell(85, 5, data["client"]["trn"], ln=True)
         
     pdf.ln(10)
     
