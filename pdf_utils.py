@@ -103,19 +103,32 @@ def generate_invoice_pdf(data, items, subtotal, tax, total):
     pdf.ln(10)
     
     # Totals
-    pdf.set_font("Helvetica", "B", 10)
+    pdf.set_font("Helvetica", "", 10)
+    pdf.set_text_color(100, 100, 100) # Gray for labels
+    
+    # Subtotal
     pdf.cell(130, 7, "", ln=False)
-    pdf.cell(30, 7, "Subtotal:", ln=False, align="R")
+    pdf.cell(30, 7, "Subtotal:", ln=False, align="L")
+    pdf.set_text_color(0, 0, 0)
     pdf.cell(30, 7, f"{data['currency']} {subtotal:,.2f} ", ln=True, align="R")
     
+    # Tax
+    pdf.set_text_color(100, 100, 100)
     pdf.cell(130, 7, "", ln=False)
-    pdf.cell(30, 7, f"Tax ({data['tax_rate']}%):", ln=False, align="R")
+    pdf.cell(30, 7, f"Tax ({data['tax_rate']}%):", ln=False, align="L")
+    pdf.set_text_color(0, 0, 0)
     pdf.cell(30, 7, f"{data['currency']} {tax:,.2f} ", ln=True, align="R")
     
+    pdf.ln(2)
+    pdf.set_draw_color(200, 200, 200)
+    pdf.line(140, pdf.get_y(), 200, pdf.get_y())
+    pdf.ln(2)
+
+    # Grand Total
     pdf.set_font("Helvetica", "B", 14)
-    pdf.set_text_color(139, 69, 19)
+    pdf.set_text_color(139, 69, 19) # Rust accent color
     pdf.cell(130, 10, "", ln=False)
-    pdf.cell(30, 10, "Total:", ln=False, align="R")
+    pdf.cell(30, 10, "TOTAL:", ln=False, align="L")
     pdf.cell(30, 10, f"{data['currency']} {total:,.2f} ", ln=True, align="R")
     
     pdf.ln(10)

@@ -216,10 +216,12 @@ def main():
             f'Number: {st.session_state.invoice_data["bank_details"]["account_number"]}<br>'
             f'IBAN: {st.session_state.invoice_data["bank_details"]["iban"]}<br>'
             f'SWIFT: {st.session_state.invoice_data["bank_details"]["swift"]}</div>'
-            f'<div style="text-align: right;">'
-            f'<p style="margin: 5px 0;">Subtotal: {st.session_state.invoice_data["currency"]} {subtotal:,.2f}</p>'
-            f'<p style="margin: 5px 0;">Tax ({st.session_state.invoice_data["tax_rate"]}%): {st.session_state.invoice_data["currency"]} {tax:,.2f}</p>'
-            f'<h3 style="color: #8b4513; margin: 10px 0;">Total: {st.session_state.invoice_data["currency"]} {total:,.2f}</h3>'
+            f'<div style="text-align: right; min-width: 250px;">'
+            f'<table style="width: 100%; border-collapse: collapse;">'
+            f'<tr><td style="padding: 5px 0; color: #666; text-align: left;">Subtotal:</td><td style="padding: 5px 0; text-align: right;">{st.session_state.invoice_data["currency"]} {subtotal:,.2f}</td></tr>'
+            f'<tr><td style="padding: 5px 0; color: #666; text-align: left;">Tax ({st.session_state.invoice_data["tax_rate"]}%):</td><td style="padding: 5px 0; text-align: right;">{st.session_state.invoice_data["currency"]} {tax:,.2f}</td></tr>'
+            f'<tr style="border-top: 2px solid #eee;"><td style="padding: 10px 0; font-size: 1.2em; font-weight: bold; color: #8b4513; text-align: left;">TOTAL:</td>'
+            f'<td style="padding: 10px 0; font-size: 1.5em; font-weight: bold; color: #8b4513; text-align: right;">{st.session_state.invoice_data["currency"]} {total:,.2f}</td></tr></table>'
             f'</div></div></div>' # End of flex-grow div
         )
 
