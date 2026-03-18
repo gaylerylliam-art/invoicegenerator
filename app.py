@@ -54,7 +54,7 @@ def init_session_state():
         "date": datetime.now().date(),
         "currency": "USD",
         "business": {"name": "Zylker Design Labs", "address": "14B, Northern Street\nNew York", "trn": "", "logo": None},
-        "client": {"name": "Jack Little", "address": "3242 Chandler Hollow Road\nPittsburgh", "trn": "", "delivery_address": ""},
+        "client": {"name": "Jack Little", "address": "3242 Chandler Hollow Road\nPittsburgh", "trn": "", "contact_person": "", "contact_detail": ""},
         "tax_rate": 5.0,
         "terms": "Due on Receipt",
         "notes": "Thanks for your business.",
