@@ -58,11 +58,16 @@ def generate_invoice_pdf(data, items, subtotal, tax, total):
     pdf.line(10, pdf.get_y(), 200, pdf.get_y())
     pdf.ln(8)
     
-    # Client details
+    # Client details (BILL TO)
+    pdf.set_fill_color(245, 245, 245) # Light gray background
+    pdf.rect(10, pdf.get_y(), 190, 45, "F") # Background box
+    
+    pdf.set_xy(15, pdf.get_y() + 5)
     pdf.set_font("Helvetica", "B", 9)
     pdf.set_text_color(139, 69, 19)
-    pdf.cell(100, 6, "BILL TO:", ln=True)
+    pdf.cell(100, 5, "BILL TO:", ln=True)
     
+    pdf.set_x(15)
     pdf.set_font("Helvetica", "B", 12)
     pdf.set_text_color(0, 0, 0)
     pdf.cell(100, 7, data["client"]["name"], ln=True)
@@ -71,16 +76,33 @@ def generate_invoice_pdf(data, items, subtotal, tax, total):
     pdf.set_text_color(60, 60, 60)
     client_addr = data["client"]["address"].split("\n")
     for line in client_addr:
-        pdf.cell(100, 5, line, ln=True)
+        pdf.set_x(15)
+        pdf.cell(100, 4.5, line, ln=True)
     
+    # Client Metadata (TRN and Contact)
+    pdf.set_y(pdf.get_y() + 2)
     if data["client"].get("trn"):
-        pdf.set_y(pdf.get_y() + 2)
+        pdf.set_x(15)
         pdf.set_font("Helvetica", "B", 9)
-        pdf.cell(10, 5, "TRN: ", ln=False)
+        pdf.cell(15, 5, "TRN: ", ln=False)
         pdf.set_font("Helvetica", "", 9)
         pdf.cell(90, 5, data["client"]["trn"], ln=True)
+
+    if data["client"].get("contact_person"):
+        pdf.set_x(15)
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.cell(15, 5, "Contact: ", ln=False)
+        pdf.set_font("Helvetica", "", 9)
+        pdf.cell(90, 5, data["client"]["contact_person"], ln=True)
+
+    if data["client"].get("contact_detail"):
+        pdf.set_x(15)
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.cell(15, 5, "Email: ", ln=False)
+        pdf.set_font("Helvetica", "", 9)
+        pdf.cell(90, 5, data["client"]["contact_detail"], ln=True)
         
-    pdf.ln(10)
+    pdf.set_y(pdf.get_y() + 10)
     
     # Table Header
     pdf.set_fill_color(139, 69, 19)

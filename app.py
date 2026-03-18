@@ -114,6 +114,8 @@ def main():
             st.session_state.invoice_data["client"]["name"] = st.text_input("Client Name", value=st.session_state.invoice_data["client"]["name"])
             st.session_state.invoice_data["client"]["trn"] = st.text_input("Client TRN/Tax ID", value=st.session_state.invoice_data["client"]["trn"])
             st.session_state.invoice_data["client"]["address"] = st.text_area("Client Address", value=st.session_state.invoice_data["client"]["address"])
+            st.session_state.invoice_data["client"]["contact_person"] = st.text_input("Contact Person", value=st.session_state.invoice_data["client"]["contact_person"])
+            st.session_state.invoice_data["client"]["contact_detail"] = st.text_input("Client Email/Phone", value=st.session_state.invoice_data["client"]["contact_detail"])
             
         with st.expander("Invoice Info", expanded=True):
             c1, c2, c3 = st.columns(3)
@@ -180,9 +182,19 @@ def main():
             f'<span>{st.session_state.invoice_data["business"]["trn"]}</span></div>'
         ) if st.session_state.invoice_data["business"]["trn"] else ""
         
+        client_contact = (
+            f'<div style="margin-top: 10px; border-top: 1px solid #ddd; padding-top: 10px;">'
+            f'<div style="display: flex; font-size: 0.85em; color: #666; margin-bottom: 2px;">'
+            f'<span style="width: 60px;"><strong>Contact:</strong></span>'
+            f'<span>{st.session_state.invoice_data["client"]["contact_person"]}</span></div>'
+            f'<div style="display: flex; font-size: 0.85em; color: #666;">'
+            f'<span style="width: 60px;"><strong>Email:</strong></span>'
+            f'<span>{st.session_state.invoice_data["client"]["contact_detail"]}</span></div></div>'
+        ) if st.session_state.invoice_data["client"]["contact_person"] else ""
+
         client_trn = (
             f'<div style="display: flex; margin-top: 5px; font-size: 0.85em; color: #666;">'
-            f'<span style="width: 50px;"><strong>TRN:</strong></span>'
+            f'<span style="width: 60px;"><strong>TRN:</strong></span>'
             f'<span>{st.session_state.invoice_data["client"]["trn"]}</span></div>'
         ) if st.session_state.invoice_data["client"]["trn"] else ""
 
@@ -200,11 +212,11 @@ def main():
             f'<div style="display: flex; margin-bottom: 5px;"><span style="width: 80px; font-weight: bold;">Invoice #:</span><span>{st.session_state.invoice_data["invoice_number"]}</span></div>'
             f'<div style="display: flex;"><span style="width: 80px; font-weight: bold;">Date:</span><span>{st.session_state.invoice_data["date"]}</span></div></div></div></div>'
             f'<hr style="border: 0; border-top: 2px solid #8b4513; margin: 40px 0;">'
-            f'<div style="margin-top: 10px; margin-bottom: 40px;">'
-            f'<h4 style="margin: 0 0 15px 0; color: #8b4513; text-transform: uppercase; font-size: 0.85em; letter-spacing: 1px;">Bill To:</h4>'
-            f'<p style="margin: 0 0 5px 0; font-size: 1.2em; font-weight: bold; color: #000;">{st.session_state.invoice_data["client"]["name"]}</p>'
-            f'<div style="margin: 0; font-size: 0.95em; color: #444; line-height: 1.5; max-width: 350px;">'
-            f'{st.session_state.invoice_data["client"]["address"].replace("\\n", "<br>")}</div>{client_trn}</div>'
+            f'<div style="margin-bottom: 40px; background: #f9f9f9; padding: 25px; border-radius: 8px; border-left: 5px solid #8b4513;">'
+            f'<h4 style="margin: 0 0 15px 0; color: #8b4513; text-transform: uppercase; font-size: 0.85em; letter-spacing: 1.5px; font-weight: bold;">Bill To:</h4>'
+            f'<p style="margin: 0 0 8px 0; font-size: 1.3em; font-weight: bold; color: #000;">{st.session_state.invoice_data["client"]["name"]}</p>'
+            f'<div style="margin: 0; font-size: 0.95em; color: #444; line-height: 1.6; max-width: 450px;">'
+            f'{st.session_state.invoice_data["client"]["address"].replace("\\n", "<br>")}</div>{client_trn}{client_contact}</div>'
             f'<table style="width: 100%; margin-top: 30px; border-collapse: collapse;"><thead>'
             f'<tr style="border-bottom: 2px solid #8b4513;">'
             f'<th style="text-align: left; padding: 10px;">Description</th>'
