@@ -126,6 +126,13 @@ def main():
             st.session_state.invoice_data["terms"] = st.text_input("Payment Terms", value=st.session_state.invoice_data["terms"])
             st.session_state.invoice_data["notes"] = st.text_area("Notes", value=st.session_state.invoice_data["notes"])
             st.session_state.invoice_data["terms_conditions"] = st.text_area("Terms & Conditions", value=st.session_state.invoice_data["terms_conditions"])
+            
+            st.subheader("Bank Details")
+            st.session_state.invoice_data["bank_details"]["bank_name"] = st.text_input("Bank Name", value=st.session_state.invoice_data["bank_details"]["bank_name"])
+            st.session_state.invoice_data["bank_details"]["account_name"] = st.text_input("Account Name", value=st.session_state.invoice_data["bank_details"]["account_name"])
+            st.session_state.invoice_data["bank_details"]["account_number"] = st.text_input("Account Number", value=st.session_state.invoice_data["bank_details"]["account_number"])
+            st.session_state.invoice_data["bank_details"]["iban"] = st.text_input("IBAN", value=st.session_state.invoice_data["bank_details"]["iban"])
+            st.session_state.invoice_data["bank_details"]["swift"] = st.text_input("SWIFT/BIC", value=st.session_state.invoice_data["bank_details"]["swift"])
 
     with col2:
         st.header("Live Preview")
@@ -171,11 +178,19 @@ def main():
         
         preview_html += (
             f'</tbody></table>'
-            f'<div style="margin-top: 40px; text-align: right;">'
+            f'<div style="margin-top: 40px; display: flex; justify-content: space-between;">'
+            f'<div style="font-size: 0.9em; color: #666;">'
+            f'<strong>Bank Details:</strong><br>'
+            f'Bank: {st.session_state.invoice_data["bank_details"]["bank_name"]}<br>'
+            f'Account: {st.session_state.invoice_data["bank_details"]["account_name"]}<br>'
+            f'Number: {st.session_state.invoice_data["bank_details"]["account_number"]}<br>'
+            f'IBAN: {st.session_state.invoice_data["bank_details"]["iban"]}<br>'
+            f'SWIFT: {st.session_state.invoice_data["bank_details"]["swift"]}</div>'
+            f'<div style="text-align: right;">'
             f'<p style="margin: 5px 0;">Subtotal: {st.session_state.invoice_data["currency"]} {subtotal:,.2f}</p>'
             f'<p style="margin: 5px 0;">Tax ({st.session_state.invoice_data["tax_rate"]}%): {st.session_state.invoice_data["currency"]} {tax:,.2f}</p>'
             f'<h3 style="color: #8b4513; margin: 10px 0;">Total: {st.session_state.invoice_data["currency"]} {total:,.2f}</h3>'
-            f'</div></div>'
+            f'</div></div></div>'
         )
         
         # Use components.html for consistent rendering

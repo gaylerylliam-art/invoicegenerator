@@ -108,6 +108,18 @@ def generate_invoice_pdf(data, items, subtotal, tax, total):
     
     pdf.ln(10)
     
+    # Bank Details
+    if data.get("bank_details") and any(data["bank_details"].values()):
+        pdf.set_font("Helvetica", "B", 10)
+        pdf.cell(100, 5, "Bank Details:", ln=True)
+        pdf.set_font("Helvetica", "", 10)
+        pdf.cell(100, 5, f"Bank: {data['bank_details']['bank_name']}", ln=True)
+        pdf.cell(100, 5, f"Account: {data['bank_details']['account_name']}", ln=True)
+        pdf.cell(100, 5, f"Number: {data['bank_details']['account_number']}", ln=True)
+        pdf.cell(100, 5, f"IBAN: {data['bank_details']['iban']}", ln=True)
+        pdf.cell(100, 5, f"SWIFT: {data['bank_details']['swift']}", ln=True)
+        pdf.ln(5)
+
     # Terms & Notes
     pdf.set_text_color(0, 0, 0)
     pdf.set_font("Helvetica", "B", 10)
