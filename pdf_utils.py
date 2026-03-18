@@ -30,33 +30,31 @@ def generate_invoice_pdf(data, items, subtotal, tax, total):
 
     # Invoice Title and Metadata (RIGHT)
     pdf.set_xy(110, y_top)
-    pdf.set_font("Helvetica", "B", 40)
-    pdf.set_text_color(0, 0, 0)
+    pdf.set_font("Helvetica", "B", 50) # Larger and bolder
+    pdf.set_text_color(0, 0, 0) # Pure black
     pdf.cell(90, 20, "INVOICE", ln=True, align="R")
     
-    pdf.ln(5)
-    
-    # Metadata Alignment (Right column, left-aligned within the block)
-    meta_x = 150
+    # Metadata Alignment (Right column, grouped tightly under INVOICE)
+    pdf.set_y(pdf.get_y() - 2) # Pull metadata closer to title
     pdf.set_font("Helvetica", "B", 10)
-    pdf.set_text_color(60, 60, 60)
+    pdf.set_text_color(40, 40, 40)
     
-    pdf.set_xy(meta_x, pdf.get_y())
-    pdf.cell(20, 5, "Invoice #:", ln=False)
+    pdf.set_x(140)
+    pdf.cell(30, 5, "Invoice #:", ln=False, align="R")
     pdf.set_font("Helvetica", "", 10)
-    pdf.cell(30, 5, data["invoice_number"], ln=True)
+    pdf.cell(30, 5, data["invoice_number"], ln=True, align="R")
     
-    pdf.set_xy(meta_x, pdf.get_y())
+    pdf.set_x(140)
     pdf.set_font("Helvetica", "B", 10)
-    pdf.cell(20, 5, "Date:", ln=False)
+    pdf.cell(30, 5, "Date:", ln=False, align="R")
     pdf.set_font("Helvetica", "", 10)
-    pdf.cell(30, 5, str(data["date"]), ln=True)
+    pdf.cell(30, 5, str(data["date"]), ln=True, align="R")
     
-    pdf.set_y(pdf.get_y() + 10)
-    pdf.set_draw_color(139, 69, 19)
-    pdf.set_line_width(0.5)
+    pdf.set_y(pdf.get_y() + 8)
+    pdf.set_draw_color(0, 0, 0) # Dark divider
+    pdf.set_line_width(0.8)
     pdf.line(10, pdf.get_y(), 200, pdf.get_y())
-    pdf.ln(8)
+    pdf.ln(10)
     
     # Client details (BILL TO)
     pdf.set_fill_color(245, 245, 245) # Light gray background
