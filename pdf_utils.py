@@ -5,70 +5,76 @@ def generate_invoice_pdf(data, items, subtotal, tax, total):
     pdf = FPDF()
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
-    # Logo
-    y_start = pdf.get_y()
+    # Logo and Company Info (LEFT)
+    y_top = pdf.get_y()
     if data["business"].get("logo"):
         logo_stream = io.BytesIO(data["business"]["logo"])
-        pdf.image(logo_stream, x=10, y=y_start, h=25)
-        pdf.set_y(y_start + 30) # Move below logo
-
-    # Font
-    pdf.set_font("Helvetica", "B", 24)
+        pdf.image(logo_stream, x=10, y=y_top, h=20)
+        pdf.set_y(y_top + 22)
+    
+    pdf.set_font("Helvetica", "B", 16)
     pdf.set_text_color(139, 69, 19) # Rust Color
+    pdf.cell(100, 7, data["business"]["name"], ln=True)
     
-    # Header
-    pdf.cell(100, 10, data["business"]["name"], ln=False)
-    
-    pdf.set_font("Helvetica", "B", 30)
-    pdf.set_text_color(200, 200, 200)
-    pdf.cell(90, 10, "INVOICE", ln=True, align="R")
-    
-    pdf.set_font("Helvetica", "", 10)
-    pdf.set_text_color(0, 0, 0)
-    
-    # Business Address
+    pdf.set_font("Helvetica", "", 9)
+    pdf.set_text_color(60, 60, 60)
     business_addr = data["business"]["address"].split("\n")
     for line in business_addr:
-        pdf.cell(100, 5, line, ln=True)
+        pdf.cell(100, 4, line, ln=True)
     
     if data["business"].get("trn"):
-        pdf.set_font("Helvetica", "B", 10)
-        pdf.cell(15, 5, "TRN: ", ln=False)
-        pdf.set_font("Helvetica", "", 10)
-        pdf.cell(85, 5, data["business"]["trn"], ln=True)
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.cell(10, 5, "TRN: ", ln=False)
+        pdf.set_font("Helvetica", "", 9)
+        pdf.cell(90, 5, data["business"]["trn"], ln=True)
 
-    pdf.ln(10)
-    
-    # Invoice details
-    pdf.set_font("Helvetica", "B", 10)
-    pdf.cell(30, 5, "Invoice #:", ln=False)
-    pdf.set_font("Helvetica", "", 10)
-    pdf.cell(50, 5, data["invoice_number"], ln=True)
+    # Invoice Title and Metadata (RIGHT - Absolute Positioning)
+    pdf.set_xy(110, y_top)
+    pdf.set_font("Helvetica", "B", 40)
+    pdf.set_text_color(0, 0, 0)
+    pdf.cell(90, 20, "INVOICE", ln=True, align="R")
     
     pdf.set_font("Helvetica", "B", 10)
-    pdf.cell(30, 5, "Date:", ln=False)
+    pdf.set_text_color(60, 60, 60)
+    pdf.set_x(110)
+    pdf.cell(60, 5, "Invoice #:", ln=False, align="R")
     pdf.set_font("Helvetica", "", 10)
-    pdf.cell(50, 5, str(data["date"]), ln=True)
+    pdf.cell(30, 5, data["invoice_number"], ln=True, align="R")
+    
+    pdf.set_x(110)
+    pdf.set_font("Helvetica", "B", 10)
+    pdf.cell(60, 5, "Date:", ln=False, align="R")
+    pdf.set_font("Helvetica", "", 10)
+    pdf.cell(30, 5, str(data["date"]), ln=True, align="R")
     
     pdf.ln(10)
+    pdf.set_draw_color(139, 69, 19)
+    pdf.set_line_width(0.5)
+    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+    pdf.ln(5)
     
     # Client details
-    pdf.set_font("Helvetica", "B", 12)
-    pdf.cell(100, 8, "BILL TO:", ln=True)
-    pdf.set_font("Helvetica", "", 10)
-    pdf.cell(100, 5, data["client"]["name"], ln=True)
+    pdf.set_font("Helvetica", "B", 10)
+    pdf.set_text_color(139, 69, 19)
+    pdf.cell(100, 6, "BILL TO:", ln=True)
     
+    pdf.set_font("Helvetica", "B", 11)
+    pdf.set_text_color(0, 0, 0)
+    pdf.cell(100, 6, data["client"]["name"], ln=True)
+    
+    pdf.set_font("Helvetica", "", 10)
+    pdf.set_text_color(60, 60, 60)
     client_addr = data["client"]["address"].split("\n")
     for line in client_addr:
         pdf.cell(100, 5, line, ln=True)
     
     if data["client"].get("trn"):
-        pdf.set_font("Helvetica", "B", 10)
-        pdf.cell(15, 5, "TRN: ", ln=False)
-        pdf.set_font("Helvetica", "", 10)
-        pdf.cell(85, 5, data["client"]["trn"], ln=True)
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.cell(10, 5, "TRN: ", ln=False)
+        pdf.set_font("Helvetica", "", 9)
+        pdf.cell(90, 5, data["client"]["trn"], ln=True)
         
-    pdf.ln(10)
+    pdf.ln(5)
     
     # Table Header
     pdf.set_fill_color(139, 69, 19)
