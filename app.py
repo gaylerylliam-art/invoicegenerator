@@ -61,6 +61,9 @@ def init_session_state():
             "notes": "Thanks for your business.",
             "terms_conditions": "Terms and conditions apply.",
             "show_stamp": False,
+            "stamp": None,
+            "seller_signature": None,
+            "customer_signature_required": True,
             "bank_details": {"bank_name": "", "account_name": "", "account_number": "", "iban": "", "swift": ""}
         }
 
@@ -83,6 +86,14 @@ def main():
             if logo_file:
                 st.session_state.invoice_data["business"]["logo"] = logo_file.read()
                 
+            stamp_file = st.file_uploader("Company Stamp", type=["png", "jpg", "jpeg"])
+            if stamp_file:
+                st.session_state.invoice_data["stamp"] = stamp_file.read()
+
+            sig_file = st.file_uploader("Seller Signature", type=["png", "jpg", "jpeg"])
+            if sig_file:
+                st.session_state.invoice_data["seller_signature"] = sig_file.read()
+
             st.session_state.invoice_data["business"]["name"] = st.text_input("Business Name", value=st.session_state.invoice_data["business"]["name"])
             st.session_state.invoice_data["business"]["trn"] = st.text_input("Business TRN/Tax ID", value=st.session_state.invoice_data["business"]["trn"])
             st.session_state.invoice_data["business"]["address"] = st.text_area("Business Address", value=st.session_state.invoice_data["business"]["address"])
@@ -126,6 +137,8 @@ def main():
             st.session_state.invoice_data["terms"] = st.text_input("Payment Terms", value=st.session_state.invoice_data["terms"])
             st.session_state.invoice_data["notes"] = st.text_area("Notes", value=st.session_state.invoice_data["notes"])
             st.session_state.invoice_data["terms_conditions"] = st.text_area("Terms & Conditions", value=st.session_state.invoice_data["terms_conditions"])
+            
+            st.session_state.invoice_data["customer_signature_required"] = st.checkbox("Include Customer Signature Area", value=st.session_state.invoice_data["customer_signature_required"])
             
             st.subheader("Bank Details")
             st.session_state.invoice_data["bank_details"]["bank_name"] = st.text_input("Bank Name", value=st.session_state.invoice_data["bank_details"]["bank_name"])
@@ -190,11 +203,44 @@ def main():
             f'<p style="margin: 5px 0;">Subtotal: {st.session_state.invoice_data["currency"]} {subtotal:,.2f}</p>'
             f'<p style="margin: 5px 0;">Tax ({st.session_state.invoice_data["tax_rate"]}%): {st.session_state.invoice_data["currency"]} {tax:,.2f}</p>'
             f'<h3 style="color: #8b4513; margin: 10px 0;">Total: {st.session_state.invoice_data["currency"]} {total:,.2f}</h3>'
-            f'</div></div></div>'
+            f'</div></div>'
         )
+
+        # Footer (Stamp and Signatures)
+        stamp_img = ""
+        seller_sig_img = ""
+        
+        if st.session_state.invoice_data["stamp"]:
+            stamp_b64 = base64.b64encode(st.session_state.invoice_data["stamp"]).decode()
+            stamp_img = f'<img src="data:image/png;base64,{stamp_b64}" style="max-height: 100px; position: absolute; right: 20px; bottom: 40px; opacity: 0.7;">'
+        
+        if st.session_state.invoice_data["seller_signature"]:
+            sig_b64 = base64.b64encode(st.session_state.invoice_data["seller_signature"]).decode()
+            seller_sig_img = f'<img src="data:image/png;base64,{sig_b64}" style="max-height: 60px; display: block; margin: 0 auto;">'
+
+        customer_sig_html = ""
+        if st.session_state.invoice_data["customer_signature_required"]:
+            customer_sig_html = (
+                f'<div style="width: 200px; text-align: center; border-top: 1px solid #ddd; padding-top: 10px;">'
+                f'<p style="margin: 0; font-size: 0.8em; color: #666;">Customer Acceptance Signature</p></div>'
+            )
+
+        footer_html = (
+            f'<div style="margin-top: 60px; display: flex; justify-content: space-between; align-items: flex-end; position: relative; padding-bottom: 20px;">'
+            f'{customer_sig_html}'
+            f'<div style="width: 250px; text-align: center; position: relative;">'
+            f'{stamp_img}'
+            f'{seller_sig_img}'
+            f'<div style="border-top: 1px solid #ddd; padding-top: 10px;">'
+            f'<p style="margin: 0; font-size: 0.8em; color: #666;">Seller Authorized Signature</p></div>'
+            f'</div></div>'
+        )
+
+        preview_html += footer_html
+        preview_html += '</div>'
         
         # Use components.html for consistent rendering
-        st.components.v1.html(preview_html, height=800, scrolling=True)
+        st.components.v1.html(preview_html, height=1000, scrolling=True)
         
         st.divider()
         
