@@ -174,7 +174,8 @@ def main():
             logo_html = f'<img src="data:image/png;base64,{logo_b64}" style="max-height: 80px; margin-bottom: 10px;">'
 
         preview_html = (
-            f'<div style="padding: 20px; background: white; border: 1px solid #ddd; border-radius: 10px; color: black; font-family: sans-serif; min-height: 800px;">'
+            f'<div style="padding: 20px; background: white; border: 1px solid #ddd; border-radius: 10px; color: black; font-family: sans-serif; min-height: 1000px; display: flex; flex-direction: column; position: relative;">'
+            f'<div style="flex-grow: 1;">'
             f'<div style="display: flex; justify-content: space-between;">'
             f'<div>{logo_html}<h2 style="color: #8b4513; margin: 0;">{st.session_state.invoice_data["business"]["name"]}</h2>'
             f'<p style="margin: 5px 0;">{st.session_state.invoice_data["business"]["address"].replace("\\n", "<br>")}</p></div>'
@@ -215,7 +216,7 @@ def main():
             f'<p style="margin: 5px 0;">Subtotal: {st.session_state.invoice_data["currency"]} {subtotal:,.2f}</p>'
             f'<p style="margin: 5px 0;">Tax ({st.session_state.invoice_data["tax_rate"]}%): {st.session_state.invoice_data["currency"]} {tax:,.2f}</p>'
             f'<h3 style="color: #8b4513; margin: 10px 0;">Total: {st.session_state.invoice_data["currency"]} {total:,.2f}</h3>'
-            f'</div></div>'
+            f'</div></div></div>' # End of flex-grow div
         )
 
         # Footer (Stamp and Signatures)
@@ -224,7 +225,7 @@ def main():
         
         if st.session_state.invoice_data["stamp"]:
             stamp_b64 = base64.b64encode(st.session_state.invoice_data["stamp"]).decode()
-            stamp_img = f'<img src="data:image/png;base64,{stamp_b64}" style="max-height: 100px; position: absolute; right: 20px; bottom: 40px; opacity: 0.7;">'
+            stamp_img = f'<img src="data:image/png;base64,{stamp_b64}" style="max-height: 100px; position: absolute; right: 20px; bottom: 30px; opacity: 0.7;">'
         
         if st.session_state.invoice_data["seller_signature"]:
             sig_b64 = base64.b64encode(st.session_state.invoice_data["seller_signature"]).decode()
@@ -238,7 +239,7 @@ def main():
             )
 
         footer_html = (
-            f'<div style="margin-top: 60px; display: flex; justify-content: space-between; align-items: flex-end; position: relative; padding-bottom: 20px;">'
+            f'<div style="margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; position: relative; padding-top: 40px; padding-bottom: 20px;">'
             f'{customer_sig_html}'
             f'<div style="width: 250px; text-align: center; position: relative;">'
             f'{stamp_img}'

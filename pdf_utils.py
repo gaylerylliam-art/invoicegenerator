@@ -120,37 +120,32 @@ def generate_invoice_pdf(data, items, subtotal, tax, total):
         pdf.cell(100, 5, f"SWIFT: {data['bank_details']['swift']}", ln=True)
         pdf.ln(5)
 
-    # Signatures and Stamp
-    y_sig = pdf.get_y()
+    # Signatures and Stamp at bottom of page
+    y_sig = 250 # Fixed position near bottom (A4 is 297mm high)
     
-    # Ensure there is enough space for signatures
-    if y_sig > 230:
-        pdf.add_page()
-        y_sig = pdf.get_y()
-
     # Customer Signature
     if data.get("customer_signature_required"):
         pdf.set_font("Helvetica", "", 8)
-        pdf.line(10, y_sig + 20, 70, y_sig + 20)
-        pdf.text(10, y_sig + 24, "Customer Acceptance Signature")
+        pdf.line(10, y_sig + 15, 70, y_sig + 15)
+        pdf.text(10, y_sig + 19, "Customer Acceptance Signature")
 
     # Seller Signature and Stamp
     x_seller = 130
     if data.get("seller_signature"):
         sig_stream = io.BytesIO(data["seller_signature"])
-        pdf.image(sig_stream, x=x_seller + 10, y=y_sig, h=15)
+        pdf.image(sig_stream, x=x_seller + 10, y=y_sig - 5, h=15)
     
     if data.get("stamp"):
         stamp_stream = io.BytesIO(data["stamp"])
-        # Overlay stamp slightly over signature area
-        pdf.image(stamp_stream, x=x_seller + 30, y=y_sig - 10, h=25)
+        # Overlay stamp
+        pdf.image(stamp_stream, x=x_seller + 30, y=y_sig - 15, h=25)
 
-    pdf.line(x_seller, y_sig + 20, x_seller + 60, y_sig + 20)
-    pdf.set_xy(x_seller, y_sig + 20)
+    pdf.line(x_seller, y_sig + 15, x_seller + 60, y_sig + 15)
+    pdf.set_xy(x_seller, y_sig + 15)
     pdf.set_font("Helvetica", "", 8)
     pdf.cell(60, 5, "Seller Authorized Signature", ln=True, align="C")
 
-    pdf.ln(10)
+    pdf.ln(5)
     
     # Terms & Notes
     pdf.set_text_color(0, 0, 0)
