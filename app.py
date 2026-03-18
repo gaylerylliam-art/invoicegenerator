@@ -49,23 +49,35 @@ def init_session_state():
     if 'line_items' not in st.session_state or st.session_state.line_items is None:
         st.session_state.line_items = [{"description": "Service Alpha", "sub_description": "Standard service", "quantity": 1, "price": 100.0}]
 
+    default_invoice_data = {
+        "invoice_number": "INV-000001",
+        "date": datetime.now().date(),
+        "currency": "USD",
+        "business": {"name": "Zylker Design Labs", "address": "14B, Northern Street\nNew York", "trn": "", "logo": None},
+        "client": {"name": "Jack Little", "address": "3242 Chandler Hollow Road\nPittsburgh", "trn": "", "delivery_address": ""},
+        "tax_rate": 5.0,
+        "terms": "Due on Receipt",
+        "notes": "Thanks for your business.",
+        "terms_conditions": "Terms and conditions apply.",
+        "show_stamp": False,
+        "stamp": None,
+        "seller_signature": None,
+        "customer_signature_required": True,
+        "bank_details": {"bank_name": "", "account_name": "", "account_number": "", "iban": "", "swift": ""}
+    }
+
     if 'invoice_data' not in st.session_state or st.session_state.invoice_data is None:
-        st.session_state.invoice_data = {
-            "invoice_number": "INV-000001",
-            "date": datetime.now().date(),
-            "currency": "USD",
-            "business": {"name": "Zylker Design Labs", "address": "14B, Northern Street\nNew York", "trn": "", "logo": None},
-            "client": {"name": "Jack Little", "address": "3242 Chandler Hollow Road\nPittsburgh", "trn": "", "delivery_address": ""},
-            "tax_rate": 5.0,
-            "terms": "Due on Receipt",
-            "notes": "Thanks for your business.",
-            "terms_conditions": "Terms and conditions apply.",
-            "show_stamp": False,
-            "stamp": None,
-            "seller_signature": None,
-            "customer_signature_required": True,
-            "bank_details": {"bank_name": "", "account_name": "", "account_number": "", "iban": "", "swift": ""}
-        }
+        st.session_state.invoice_data = default_invoice_data
+    else:
+        # Ensure all default keys exist (for existing sessions)
+        for key, value in default_invoice_data.items():
+            if key not in st.session_state.invoice_data:
+                st.session_state.invoice_data[key] = value
+            elif isinstance(value, dict) and isinstance(st.session_state.invoice_data[key], dict):
+                # Deep merge for nested dicts like bank_details
+                for sub_key, sub_value in value.items():
+                    if sub_key not in st.session_state.invoice_data[key]:
+                        st.session_state.invoice_data[key][sub_key] = sub_value
 
 def main():
     init_session_state()
